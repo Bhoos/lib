@@ -1,6 +1,6 @@
 {
   "name": "@bhoos/normalized",
-  "version": "0.0.3",
+  "version": "0.0.1",
   "description": "Simple library to work with normalized redux state",
   "main": "__dist__/index.js",
   "files": [
@@ -9,6 +9,7 @@
   "author": "Ranjan Shrestha",
   "license": "MIT",
   "scripts": {
-    "build": "../../node_modules/babel-cli/bin/babel.js src --out-dir __dist__"
+    "build": "../../node_modules/.bin/babel src -d __dist__",
+    "watch": "../../node_modules/.bin/babel src -d __dist__ -w"
   }
 }

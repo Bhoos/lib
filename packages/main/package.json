@@ -1,0 +1,11 @@
+{
+  "name": "@bhoos/lib",
+  "version": "0.0.1",
+  "description": "Bhoos library",
+  "main": "index.js",
+  "author": "Ranjan Shrestha",
+  "license": "MIT",
+  "dependencies": {
+    "@bhoos/normalized": "^0.0.1"
+  }
+}
