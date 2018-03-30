@@ -1,8 +1,11 @@
 {
   "name": "@bhoos/normalized",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "Simple library to work with normalized redux state",
   "main": "__dist__/index.js",
+  "files": [
+    "__dist__"
+  ],
   "author": "Ranjan Shrestha",
   "license": "MIT",
   "scripts": {
