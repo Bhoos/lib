@@ -1,6 +1,6 @@
 {
   "name": "@bhoos/normalized",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "description": "Simple library to work with normalized redux state",
   "main": "__dist__/index.js",
   "files": [
