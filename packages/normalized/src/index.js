@@ -11,7 +11,7 @@ export type NormalizedState<T: Entity> = {
   },
 };
 
-export type UpdateFn<T: Entity> = (T, number, Array<string>) => T;
+export type UpdateFn<T: Entity> = (T, number, Array<string>) => any;
 
 export function create<T: Entity>(items: Array<T>, initial?: T) {
   return {
