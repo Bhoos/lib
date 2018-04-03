@@ -9,7 +9,10 @@
   "author": "Ranjan Shrestha",
   "license": "MIT",
   "scripts": {
+    "clean": "../../node_modules/.bin/rimraf __dist__",
+    "flow": "../../node_modules/.bin/flow-copy-source src __dist__",
     "build": "../../node_modules/.bin/babel src -d __dist__",
+    "prepublishOnly": "npm run clean && npm run build && npm run flow",
     "watch": "../../node_modules/.bin/babel src -d __dist__ -w"
   }
 }
