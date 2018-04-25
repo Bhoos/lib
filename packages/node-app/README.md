@@ -9,6 +9,7 @@ Works with ES6 only (Node version 6 or more).
 # Usage
 ```javascript
 import run from '@bhoos/node-app';
+// import run from '@bhoos/lib/node-app';
 
 run(async (app) => {
   // Use app.logger for logging
