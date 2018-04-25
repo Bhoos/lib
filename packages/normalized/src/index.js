@@ -13,6 +13,18 @@ export type NormalizedState<T: Entity> = {
 
 export type UpdateFn<T: Entity> = (T, number, Array<string>) => any;
 
+export function get<T:Entity>(state: NormalizedState<T>, id: string): T {
+  return state.byId[id];
+}
+
+export function getAt<T: Entity>(state: NormalizedState<T>, index: number): T {
+  return state.byId[state.allIds[index]];
+}
+
+export function length<T: Entity>(state: NormalizedState<T>): number {
+  return state.allIds.length;
+}
+
 export function create<T: Entity>(items: Array<T>, initial?: Object) {
   return {
     allIds: items.map(item => item.id),
