@@ -6,7 +6,6 @@
   "author": "Ranjan Shrestha",
   "license": "MIT",
   "dependencies": {
-    "@bhoos/node-app": "^0.0.8",
     "@bhoos/normalized": "^0.0.8"
   }
 }
