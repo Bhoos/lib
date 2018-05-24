@@ -55,4 +55,7 @@ export default async function run(starter) {
     // Perform a shutdown
     shutdown();
   }
+
+  // Return the app instance
+  return app;
 }
