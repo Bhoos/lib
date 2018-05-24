@@ -15,7 +15,7 @@ export default async function run(starter) {
 
     get: name => config[name],
 
-    configure(obj) {
+    configure: (obj) => {
       Object.assign(config, obj);
     },
 
@@ -25,6 +25,11 @@ export default async function run(starter) {
 
     appendExitHandler: (cleaner) => {
       cleaners.push(cleaner);
+    },
+
+    exit: () => {
+      // Emit a termination signal
+      process.emit('SIGTERM');
     },
   };
 
