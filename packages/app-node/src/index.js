@@ -40,8 +40,6 @@ export default async function run(starter) {
     await cleaners.reduce((res, cleaner) => (
       res.then(() => cleaner())
     ), Promise.resolve(null));
-
-    process.nextTick(() => process.exit());
   }
 
   process.on('SIGINT', shutdown);
