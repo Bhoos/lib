@@ -1,6 +1,6 @@
 {
-  "name": "@bhoos/node-app",
-  "version": "0.0.8",
+  "name": "app-node",
+  "version": "0.2.1",
   "description": "A node app runner",
   "main": "__dist__/index.js",
   "files": [

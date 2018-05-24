@@ -3,12 +3,12 @@ A simple node app life cycle manager with graceful shutdown behaviour.
 Works with ES6 only (Node version 6 or more).
 
 # Installation
-> `$ npm install @bhoos/node-app`
+> `$ npm install app-node`
 
 
 # Usage
 ```javascript
-import run from '@bhoos/node-app';
+import run from 'app-node';
 // import run from '@bhoos/lib/node-app';
 
 run(async (app) => {
