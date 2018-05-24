@@ -16,7 +16,7 @@ export default async function run(starter) {
     get: name => config[name],
 
     configure(obj) {
-      Object.assign(this, obj);
+      Object.assign(config, obj);
     },
 
     addExitHandler: (cleaner) => {
