@@ -1,4 +1,5 @@
 node_modules/
 __dist__/
+cjs/
 lerna-debug.log
 yarn-debug.log
