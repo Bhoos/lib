@@ -1,6 +1,6 @@
-export function promisify(fn, context) {
+export function promisify(fn, context = fn) {
   return (...args) => new Promise((resolve, reject) => {
-    fn.apply(context || fn, [...args, (err, res) => {
+    fn.apply(context, [...args, (err, res) => {
       if (err) {
         return reject(err);
       }
