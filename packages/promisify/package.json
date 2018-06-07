@@ -1,6 +1,6 @@
 {
   "name": "@bhoos/promisify",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Simple library to promisify call-back based functions",
   "main": "cjs/index.js",
   "files": [
