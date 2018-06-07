@@ -7,7 +7,7 @@
     "cjs"
   ],
   "scripts": {
-    "test": "AWS_REGION='ap-south-1' DYNAMODB_ENDPOINT='http://localhost:8000' jest",
+    "test": "AWS_REGION='ap-south-1' DYNAMODB_LOCAL_PORT=8000 jest",
     "lint": "eslint src",
     "build": "babel src -d cjs",
     "prepare": "npm run test && npm run build"

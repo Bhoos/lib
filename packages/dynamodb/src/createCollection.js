@@ -12,7 +12,7 @@ import Field from './_Field';
 // AWS dynamodb options, set via environment variables
 const options = {
   region: process.env.AWS_REGION,
-  endpoint: process.env.DYNAMODB_ENDPOINT,
+  endpoint: process.env.DYNAMODB_LOCAL_PORT ? `http://localhost:${process.env.DYNAMODB_LOCAL_PORT}` : undefined,
 };
 
 // The dynamodb instance
@@ -64,6 +64,6 @@ export default function createCollection(name, schemaFn, procs) {
 
   return {
     ...collection,
-    ...procs({ db: DynamoDB, self: collection }),
+    ...procs({ db, doc, self: collection }),
   };
 }

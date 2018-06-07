@@ -1,8 +1,14 @@
+import { spawn } from 'child_process';
 import createCollection from '../src/createCollection';
 
 function bcrypt(pass) {
   return pass;
 }
+
+let awsdb = null;
+beforeAll(() => {
+  awsdb = spawn('aws-db');
+});
 
 const User = createCollection('User', ({ key, field }) => ({
   username: key(),
@@ -93,4 +99,10 @@ describe('createCollection', () => {
     // Deleting non existent record should throw
     await expect(User.delete(2000, '2KKK')).rejects.toThrow();
   });
+});
+
+afterAll(() => {
+  if (awsdb) {
+    awsdb.kill();
+  }
 });
