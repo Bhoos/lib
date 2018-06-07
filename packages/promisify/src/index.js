@@ -12,18 +12,19 @@ function promisify(fn, context = fn) {
 
 function promisifyAll(obj) {
   const res = {};
-  Object.keys(obj).forEach((key) => {
+  // eslint-disable-next-line
+  for (let key in obj) {
     const fn = obj[key];
     if (typeof fn === 'function') {
       res[key] = promisify(fn, obj);
     }
-  });
+  }
   return res;
 }
 
-export default function (a) {
+export default function (a, context = a) {
   if (typeof (a) === 'function') {
-    return promisify(a);
+    return promisify(a, context);
   } else if (typeof (a) === 'object') {
     return promisifyAll(a);
   }
