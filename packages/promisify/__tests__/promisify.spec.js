@@ -1,4 +1,4 @@
-import { promisify, promisifyAll } from '../src';
+import promisify from '../src';
 
 function exampleMethodWithoutArgs(cb) {
   cb(null, true);
@@ -9,7 +9,9 @@ function exampleMethodWithArgs(a, b, cb) {
 }
 
 function exampleThatThrows(cb) {
-  cb(new Error('throw'), null);
+  setTimeout(() => {
+    cb(new Error('throw'), null);
+  }, 100);
 }
 
 const arrow = (flag, cb) => (flag ? cb(new Error('err'), null) : cb(null, flag));
@@ -42,7 +44,7 @@ describe('promisify specification', () => {
   });
 
   it('check object promisification', async () => {
-    const p = promisifyAll(obj);
+    const p = promisify(obj);
     await expect(p.fn1(false)).resolves.toBe(1);
     await expect(p.fn2(true)).rejects.toThrow('2');
     await expect(p.fn3()).resolves.toBe(obj.member);
