@@ -95,6 +95,12 @@ const Local = createCollection('__TEST_Local__', ({ key, field }) => ([
   },
 }));
 
+const TTL = createCollection('__TEST_ttl__', ({ key, field }) => ([
+  key('id').auto(),
+  field('name'),
+  field('expiry').ttl(),
+]));
+
 /* End of creating tables */
 
 /**
@@ -108,6 +114,7 @@ beforeAll(async () => {
       Movies.deleteTable(),
       GameScore.deleteTable(),
       Local.deleteTable(),
+      TTL.deleteTable(),
     ]);
   } catch (e) {
     console.warn('HIGHLY LIKELY', e.message);
@@ -203,5 +210,24 @@ describe('createCollection', () => {
     // Search via a local secondary index
     const r = await Local.find('test', 2);
     expect(r).toMatchObject({ game: 'test', title: 'Two', timestamp: 2 });
+  });
+
+  it('checks for time to live specification', async () => {
+    await TTL.createTable();
+    await TTL.updateTTL(true);
+
+    // Insert a record without expiry
+    const nid = await TTL.insert({ name: 'Jane' });
+
+    const id = await TTL.insert({ name: 'John', expiry: Math.floor(Date.now() / 1000) });
+    expect(await TTL.findOne(id)).toMatchObject({ name: 'John' });
+
+    // Run after a second, to ensure the record has been remove
+    await new Promise(resolve => setTimeout(resolve, 4000));
+    console.log('Checking for record at', Math.floor(Date.now() / 1000));
+    expect(await TTL.findOne(id)).toBe(null);
+
+    // The one without expiry should still be there
+    expect(await TTL.findOne(nid)).toMatchObject({ name: 'Jane' });
   });
 });

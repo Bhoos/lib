@@ -121,3 +121,19 @@ const GameScore = createCollection('GameScore', ({ key, field }) => ([
   },
 }));
 ```
+
+### Example (With TTL)
+```javascript
+const Logs = createCollection('Log', ({ key, field }) => ([
+  key('id').auto(),
+  field('name'),
+  field('expiry').ttl(),
+]));
+
+// Run the update ttl after creating the table to enable TTL on expiry
+await Logs.updateTTL(true);
+
+// The expiry field can now be set with a future EPOCH time for automatic removal
+await Logs.insert({ name: 'Tomorrow', expiry: parseInt(Date.now() / 1000) + 86400 });
+await Logs.insert({ name: 'next week', expiry: parseInt(Date.now() / 1000) + 7 * 86400 });
+```

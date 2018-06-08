@@ -25,6 +25,8 @@ class Field {
 
     this.globalIndex = null; // An object to define global secondary index name and type
     this.localIndex = null; // Local secondary index name on this field
+
+    this.hasttl = false; // Time to live marker attrbute
   }
 
   number() {
@@ -81,6 +83,12 @@ class Field {
 
   local(name) {
     this.localIndex = name;
+    return this;
+  }
+
+  ttl() {
+    this.hasttl = true;
+    this.attributeType = TYPE_NUMBER;
     return this;
   }
 }

@@ -2,6 +2,7 @@ import DynamoDB from 'aws-sdk/clients/dynamodb';
 
 import createTable from './createTable';
 import deleteTable from './deleteTable';
+import updateTTL from './updateTTL';
 import insert from './insert';
 import findOne from './findOne';
 import update from './update';
@@ -41,6 +42,7 @@ export default function createCollection(name, schemaFn, procs) {
   const collection = {
     createTable: createTable(db, name, schemaDef),
     deleteTable: deleteTable(db, name, schemaDef),
+    updateTTL: updateTTL(db, name, schemaDef),
     insert: insert(doc, name, schemaDef),
     update: update(doc, name, schemaDef),
     delete: remove(doc, name, schemaDef),
