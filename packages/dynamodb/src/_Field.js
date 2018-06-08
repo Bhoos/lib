@@ -49,7 +49,7 @@ class Field {
     } else if (this.attributeType === TYPE_BINARY) {
       this.attributeType = TYPE_BINARY_SET;
     } else {
-      throw new Error('Invalid scalar type for set');
+      throw new Error(`Invalid scalar type to declare set for ${this.name}`);
     }
   }
 
