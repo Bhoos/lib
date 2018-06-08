@@ -117,6 +117,7 @@ beforeAll(async () => {
       TTL.deleteTable(),
     ]);
   } catch (e) {
+    // eslint-disable-next-line no-console
     console.warn('HIGHLY LIKELY', e.message);
   }
 });
@@ -224,7 +225,6 @@ describe('createCollection', () => {
 
     // Run after a second, to ensure the record has been remove
     await new Promise(resolve => setTimeout(resolve, 4000));
-    console.log('Checking for record at', Math.floor(Date.now() / 1000));
     expect(await TTL.findOne(id)).toBe(null);
 
     // The one without expiry should still be there
