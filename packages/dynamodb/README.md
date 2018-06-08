@@ -16,9 +16,9 @@ import { createCollection } from '@bhoos/dynamodb'
 
 // Create collections as required
 // A Simple collection with single key
-const User = createCollection('User', ({ key }) => {
-  username: key(),
-}, ({ self }) => {
+const User = createCollection('User', ({ key }) => [
+  key('username'),
+], ({ self }) => {
   get: async (username) => {
     const u = await self.findOne(username);
     const { password, ...res } = u;
@@ -68,12 +68,56 @@ await User.delete('jane@doe.com');
 ```
 ### Example (Multiple keys)
 ```javascript
-const Movie = createCollection('Movie', ({ key }) => ({
-  year: key(),
-  title: key().sort(),
-}), ({ self, db }) => ({
+const Movie = createCollection('Movie', ({ key }) => ([
+  key('year'),
+  key('title'),
+}), ({ self, doc }) => ({
   get: (year, title) => self.findOne(year, title),
-  findAnnual: (year) => db.query(.......), // Write your dynamodb query to find something
+  findAnnual: (year) => doc.query(.......), // Write your dynamodb query to find something
 });
 
+```
+
+### Example (Local Secondary Index)
+```javascript
+const Thread = createCollection('Thread', ({ key, field }) => ([
+  key('forum'),
+  key('subject').sort(),
+  field('timestamp').local('LastPostIndex'),
+]), ({ doc }) => ({
+  // Get all recent posts, (with paging)
+  getRecentPosts: (forum) => {
+    const params = {
+      TableName: Thread.name,
+      IndexName: 'LastPostIndex',
+      KeyConditionExpression: '#forum=:forum',
+      ExpressionAttributeNames: { '#forum': 'forum' },
+      ExpressionAttributeValues: { ':forum': forum },
+      ScanIndexForward: false,
+    };
+
+    return doc.query(params).promise().then(data => data.Items);
+  },
+}));
+```
+
+### Example (Global Secondary Index)
+```javascript
+const GameScore = createCollection('GameScore', ({ key, field }) => ([
+  key('UserId'),
+  key('GameTitle').sort().global('GameTitleIndex'), // Sort key for main, partition key for global
+  field('TopScore').global('GameTitleIndex', true) // Sort key for global index
+]), ({ doc }) => ({
+  getTopScorer: (title) => {
+    const params = {
+      TableName: GameScore.name,
+      IndexName: 'GameTitleIndex',
+      KeyConditionExpression: 'GameTitle = :title',
+      ExpressionAttributeValues: { ':title': title },
+      ScanIndexForward: false,
+    };
+
+    return doc.query(params).promise().then(data => data.Items);
+  },
+}));
 ```
