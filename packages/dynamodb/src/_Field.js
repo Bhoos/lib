@@ -9,11 +9,22 @@ export const TYPE_NUMBER_SET = 'NS';
 export const TYPE_BINARY_SET = 'BS';
 export const TYPE_NULL = 'NULL';
 
+
+// Dynamodb key type for partition key
+export const HASH = 'HASH';
+
+// Dynamodb key type for sort key
+export const RANGE = 'RANGE';
+
+
 class Field {
   constructor(name) {
     this.name = name; // The name of the field
     this.isRequired = false;  // Flag to ensure if the attribute is required
     this.attributeType = TYPE_STRING; // The type of the attribute, string by default
+
+    this.globalIndex = null; // An object to define global secondary index name and type
+    this.localIndex = null; // Local secondary index name on this field
   }
 
   number() {
@@ -55,6 +66,21 @@ class Field {
 
   required() {
     this.isRequired = true;
+    return this;
+  }
+
+  global(name, sort = false, readCapacityUnits = 5, writeCapacityUnits = 1) {
+    this.globalIndex = {
+      name,
+      type: sort ? RANGE : HASH,
+      readCapacityUnits,
+      writeCapacityUnits,
+    };
+    return this;
+  }
+
+  local(name) {
+    this.localIndex = name;
     return this;
   }
 }

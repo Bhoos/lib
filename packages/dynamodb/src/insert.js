@@ -1,32 +1,26 @@
-export default function insert(db, name, { pKey, sKey }) {
+import shortid from 'shortid';
+
+export default function insert(db, name, { keys, pKey }) {
   const params = {
     TableName: name,
-    ConditionExpression: 'attribute_not_exists(#p)',
-    ExpressionAttributeNames: {
-      '#p': pKey,
-    },
+    ConditionExpression: keys.map(k => `attribute_not_exists(#${k.name})`).join(' AND '),
+    ExpressionAttributeNames: keys.reduce((res, k) => {
+      res[`#${k.name}`] = k.name;
+      return res;
+    }, {}),
   };
 
-  if (sKey) {
-    params.ConditionExpression = `${params.ConditionExpression} AND attribute_not_exists(#s)`;
-    params.ExpressionAttributeNames['#s'] = sKey;
-  }
+  return (record) => {
+    if (pKey.isAuto && !record[pKey.name]) {
+      // eslint-disable-next-line no-param-reassign
+      record[pKey.name] = shortid();
+    }
+    const pid = record[pKey.name];
 
-  return record => new Promise((resolve, reject) => {
     params.Item = record;
-    db.put(params, (err) => {
-      if (err) {
-        return reject(err);
-      }
 
-      if (sKey) {
-        return resolve({
-          [pKey]: record[pKey],
-          [sKey]: record[sKey],
-        });
-      }
 
-      return resolve(record[pKey]);
-    });
-  });
+    // TODO: Check for condition expression failure, specially when key is auto generated
+    return db.put(params).promise().then(() => pid);
+  };
 }

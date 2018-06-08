@@ -1,40 +1,24 @@
-export default function remove(db, name, { pKey, sKey }) {
+export default function remove(db, name, { pKey, sKey, keys }) {
   const params = {
     TableName: name,
     Key: {},
-    ConditionExpression: 'attribute_exists(#p)',
-    ExpressionAttributeNames: {
-      '#p': pKey,
-    },
+    ConditionExpression: keys.map(k => `attribute_exists(#${k.name})`).join(' AND '),
+    ExpressionAttributeNames: keys.reduce((res, k) => {
+      res[`#${k.name}`] = k.name;
+      return res;
+    }, {}),
   };
 
-
-  if (!sKey) {
-    return id => new Promise((resolve, reject) => {
-      params.Key[pKey] = id;
-
-      db.delete(params, (err) => {
-        if (err) {
-          return reject(err);
-        }
-
-        return resolve(true);
-      });
-    });
+  if (sKey) {
+    return (pid, sid) => {
+      params.Key[pKey.name] = pid;
+      params.Key[sKey.name] = sid;
+      return db.delete(params).promise().then(() => true);
+    };
   }
 
-  params.ConditionExpression = `${params.ConditionExpression} AND attribute_exists(#s)`;
-  params.ExpressionAttributeNames['#s'] = sKey;
-
-  return (pid, sid) => new Promise((resolve, reject) => {
-    params.Key[pKey] = pid;
-    params.Key[sKey] = sid;
-    db.delete(params, (err) => {
-      if (err) {
-        return reject(err);
-      }
-
-      return resolve(true);
-    });
-  });
+  return (pid) => {
+    params.Key[pKey.name] = pid;
+    return db.delete(params).promise(() => true);
+  };
 }

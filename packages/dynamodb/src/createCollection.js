@@ -1,13 +1,15 @@
 import DynamoDB from 'aws-sdk/clients/dynamodb';
 
 import createTable from './createTable';
+import deleteTable from './deleteTable';
 import insert from './insert';
 import findOne from './findOne';
 import update from './update';
 import remove from './delete';
 
-import Key, { HASH, RANGE } from './_Key';
+import Key from './_Key';
 import Field from './_Field';
+import validateSchema from './_validateSchema';
 
 // AWS dynamodb options, set via environment variables
 const options = {
@@ -21,41 +23,28 @@ const doc = new DynamoDB.DocumentClient(options);
 
 // Schema generator, for declaring schema
 const schemaGenerator = {
-  key: () => new Key(),
-  field: () => new Field(),
+  key: name => new Key(name),
+  field: name => new Field(name),
 };
 
-// Default schema, with auto generated id
-const DEFAULT_SCHEMA = {
-  _id: (new Key()).setAuto(),
-};
+// Default schema, with auto generated id, similar to mongodb
+const DEFAULT_SCHEMA = [
+  new Key('_id').auto(),
+];
 
 export default function createCollection(name, schemaFn, procs) {
   const schema = schemaFn ? schemaFn(schemaGenerator) : DEFAULT_SCHEMA;
-  const def = Object.keys(schema).reduce((res, n) => {
-    switch (schema[n].keyType) {
-      case HASH:
-        res.pKey = n;
-        break;
-      case RANGE:
-        res.sKey = n;
-        break;
-      default:
-        break;
-    }
 
-    return res;
-  }, {});
-
-  def.schema = schema;
+  const schemaDef = validateSchema(schema, name);
 
   // The generic collection object, with standard functions
   const collection = {
-    createTable: createTable(db, name, def),
-    insert: insert(doc, name, def),
-    update: update(doc, name, def),
-    delete: remove(doc, name, def),
-    findOne: findOne(doc, name, def),
+    createTable: createTable(db, name, schemaDef),
+    deleteTable: deleteTable(db, name, schemaDef),
+    insert: insert(doc, name, schemaDef),
+    update: update(doc, name, schemaDef),
+    delete: remove(doc, name, schemaDef),
+    findOne: findOne(doc, name, schemaDef),
   };
 
   if (!procs) {
@@ -63,6 +52,7 @@ export default function createCollection(name, schemaFn, procs) {
   }
 
   return {
+    name,
     ...collection,
     ...procs({ db, doc, self: collection }),
   };
