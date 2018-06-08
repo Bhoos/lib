@@ -19,8 +19,8 @@ const options = {
 };
 
 // The dynamodb instance
-const db = new DynamoDB(options);
-const doc = new DynamoDB.DocumentClient(options);
+export const db = new DynamoDB(options);
+export const doc = new DynamoDB.DocumentClient(options);
 
 // Schema generator, for declaring schema
 const schemaGenerator = {

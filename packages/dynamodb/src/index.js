@@ -1,4 +1,4 @@
-import createCollection from './createCollection';
+import createCollection, { db, doc } from './createCollection';
 
 export default createCollection;
-export { createCollection };
+export { db, doc, createCollection };
