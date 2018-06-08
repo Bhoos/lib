@@ -4,7 +4,7 @@ function bcrypt(pass) {
   return pass;
 }
 
-
+/* Create all the test tables */
 const User = createCollection('__TEST_User__', ({ key, field }) => ([
   key('username'),
   field('password'),
@@ -95,6 +95,12 @@ const Local = createCollection('__TEST_Local__', ({ key, field }) => ([
   },
 }));
 
+/* End of creating tables */
+
+/**
+  Delete all the tables before starting the test. The dynamodb must have been
+  started in memory mode as a local server
+*/
 beforeAll(async () => {
   try {
     await Promise.all([
@@ -186,12 +192,15 @@ describe('createCollection', () => {
   it('checks for local secondary index usage', async () => {
     await Local.createTable();
 
+    // Insert some data
     await Local.insert({ game: 'test', title: 'One', timestamp: 1 });
     await Local.insert({ game: 'test', title: 'Two', timestamp: 2 });
 
+    // Run query via the local secondary index
     const res = await Local.query('test');
     expect(res).toHaveLength(2);
 
+    // Search via a local secondary index
     const r = await Local.find('test', 2);
     expect(r).toMatchObject({ game: 'test', title: 'Two', timestamp: 2 });
   });
