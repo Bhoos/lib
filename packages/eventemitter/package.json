@@ -1,0 +1,9 @@
+{
+  "name": "@bhoos/eventemitter",
+  "version": "0.1.0",
+  "description": "A copy of nodejs eventemitter for global use (react-native/browser/etc)",
+  "main": "src/index.js",
+  "repository": "https://github.com/bhoos/lib",
+  "author": "Ranjan Shrestha",
+  "license": "MIT"
+}
