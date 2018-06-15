@@ -132,3 +132,8 @@ class EventEmitter {
     return this._events[type];
   }
 }
+
+EventEmitter.EventEmitter = EventEmitter;
+exports.default = EventEmitter;
+module.exports = EventEmitter;
+
