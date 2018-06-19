@@ -18,6 +18,8 @@ const options = {
   endpoint: process.env.DYNAMODB_ENDPOINT || undefined,
 };
 
+const NAME_PREFIX = process.env.DYNAMODB_STAGING || '';
+
 // The dynamodb instance
 export const db = new DynamoDB(options);
 export const doc = new DynamoDB.DocumentClient(options);
@@ -34,19 +36,21 @@ const DEFAULT_SCHEMA = [
 ];
 
 export default function createCollection(name, schemaFn, procs) {
+  const prefixedName = `${NAME_PREFIX}${name}`;
+
   const schema = schemaFn ? schemaFn(schemaGenerator) : DEFAULT_SCHEMA;
 
-  const schemaDef = validateSchema(schema, name);
+  const schemaDef = validateSchema(schema, prefixedName);
 
   // The generic collection object, with standard functions
   const collection = {
-    createTable: createTable(db, name, schemaDef),
-    deleteTable: deleteTable(db, name, schemaDef),
-    updateTTL: updateTTL(db, name, schemaDef),
-    insert: insert(doc, name, schemaDef),
-    update: update(doc, name, schemaDef),
-    delete: remove(doc, name, schemaDef),
-    findOne: findOne(doc, name, schemaDef),
+    createTable: createTable(db, prefixedName, schemaDef),
+    deleteTable: deleteTable(db, prefixedName, schemaDef),
+    updateTTL: updateTTL(db, prefixedName, schemaDef),
+    insert: insert(doc, prefixedName, schemaDef),
+    update: update(doc, prefixedName, schemaDef),
+    delete: remove(doc, prefixedName, schemaDef),
+    findOne: findOne(doc, prefixedName, schemaDef),
   };
 
   if (!procs) {
@@ -54,7 +58,7 @@ export default function createCollection(name, schemaFn, procs) {
   }
 
   return {
-    name,
+    name: prefixedName,
     ...collection,
     ...procs({ db, doc, self: collection }),
   };
