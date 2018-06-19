@@ -15,7 +15,7 @@ import validateSchema from './_validateSchema';
 // AWS dynamodb options, set via environment variables
 const options = {
   region: process.env.AWS_REGION,
-  endpoint: process.env.DYNAMODB_LOCAL_PORT ? `http://localhost:${process.env.DYNAMODB_LOCAL_PORT}` : undefined,
+  endpoint: process.env.DYNAMODB_ENDPOINT || undefined,
 };
 
 // The dynamodb instance
