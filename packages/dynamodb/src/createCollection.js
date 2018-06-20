@@ -44,6 +44,7 @@ export default function createCollection(name, schemaFn, procs) {
 
   // The generic collection object, with standard functions
   const collection = {
+    name: prefixedName,
     createTable: createTable(db, prefixedName, schemaDef),
     deleteTable: deleteTable(db, prefixedName, schemaDef),
     updateTTL: updateTTL(db, prefixedName, schemaDef),
@@ -58,7 +59,6 @@ export default function createCollection(name, schemaFn, procs) {
   }
 
   return {
-    name: prefixedName,
     ...collection,
     ...procs({ db, doc, self: collection }),
   };
