@@ -18,7 +18,7 @@ const options = {
   endpoint: process.env.DYNAMODB_ENDPOINT || undefined,
 };
 
-const NAME_PREFIX = process.env.DYNAMODB_STAGING || '';
+const NAME_PREFIX = process.env.DYNAMODB_PREFIX || '';
 
 // The dynamodb instance
 export const db = new DynamoDB(options);
