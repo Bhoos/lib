@@ -6,7 +6,7 @@ function convertObjToExpression(params, obj) {
 
   let sep = 'SET';
 
-  Object.keys(obj).forEach((name) => {
+  Object.keys(obj).forEach((name, idx) => {
     const value = obj[name];
 
     // skip any undefined values
@@ -14,8 +14,8 @@ function convertObjToExpression(params, obj) {
       return;
     }
 
-    const f = `#${name}`;
-    const v = `:${name}`;
+    const f = `#n${idx}`;
+    const v = `:v${idx}`;
 
     params.UpdateExpression = `${params.UpdateExpression}${sep} ${f}=${v}`;
     params.ExpressionAttributeNames[f] = name;
