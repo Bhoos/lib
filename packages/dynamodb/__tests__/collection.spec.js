@@ -1,8 +1,31 @@
+import dynamodb from 'aws-db';
 import createCollection from '../src/createCollection';
 
 function bcrypt(pass) {
   return pass;
 }
+
+
+function validateDynamoDB() {
+  const endPoint = process.env.DYNAMODB_ENDPOINT;
+  if (!endPoint) {
+    throw new Error('Set your dynamodb endpoint url with DYNAMODB_ENDPOINT env');
+  }
+
+  const prefix = 'http://localhost:';
+  if (!endPoint.startsWith(prefix)) {
+    throw new Error('Tests are supposed to be run with local dynamodb instance');
+  }
+
+  const port = parseInt(endPoint.substr(prefix.length), 10);
+  if (Number.isNaN(port)) {
+    throw new Error('Invalid port');
+  }
+
+  return port;
+}
+
+const stopMockDB = dynamodb(validateDynamoDB());
 
 /* Create all the test tables */
 const User = createCollection('__TEST_User__', ({ key, field }) => ([
@@ -107,19 +130,8 @@ const TTL = createCollection('__TEST_ttl__', ({ key, field }) => ([
   Delete all the tables before starting the test. The dynamodb must have been
   started in memory mode as a local server
 */
-beforeAll(async () => {
-  try {
-    await Promise.all([
-      User.deleteTable(),
-      Movies.deleteTable(),
-      GameScore.deleteTable(),
-      Local.deleteTable(),
-      TTL.deleteTable(),
-    ]);
-  } catch (e) {
-    // eslint-disable-next-line no-console
-    console.warn('HIGHLY LIKELY', e.message);
-  }
+afterAll(async () => {
+  stopMockDB();
 });
 
 describe('createCollection', () => {
@@ -148,17 +160,28 @@ describe('createCollection', () => {
     // Update with non existing key should fail
     await expect(User.update({ password: 'P2' }, 'U2')).rejects.toThrow();
 
+    // Upsert should insert a new record
+    expect(await User.upsert({ username: 'U2', password: 'P2' })).toBe('U2');
+
+    // Upsert should update an existing record as well
+    expect(await User.upsert({ username: 'U2', password: 'changed', name: 'nnn' })).toBe('U2');
+
     // Delete should throw on non existent record
     await expect(User.delete('U1')).rejects.toThrow();
   });
 
-  it('checks for all function with double keys', async () => {
+  it.only('checks for all function with double keys', async () => {
     await Movies.createTable();
 
     // Insert record
     await Movies.insert({ year: 2000, title: '2K 1' });
+    await expect(Movies.insert({ year: 2000, title: '2K 1' })).rejects.toThrow();
+    expect(await Movies.upsert({ year: 2000, title: '2K 1', rating: 10 })).toBe(2000);
+    expect(await Movies.upsert({ year: 2001, title: '2K1 1' })).toBe(2001);
+
     // Find the record
-    await expect(await Movies.findOne(2000, '2K 1')).toEqual({ year: 2000, title: '2K 1' });
+    await expect(await Movies.findOne(2000, '2K 1')).toEqual({ year: 2000, title: '2K 1', rating: 10 });
+    await expect(await Movies.findOne(2001, '2K1 1')).toEqual({ year: 2001, title: '2K1 1' });
 
     // Update the record should fail (keys cannot be changed in dynamodb)
     await expect(Movies.update({ title: '2K 1 Changed' }, 2000, '2K 1')).rejects.toThrow();
