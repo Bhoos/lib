@@ -49,6 +49,7 @@ export default function createCollection(name, schemaFn, procs) {
     deleteTable: deleteTable(db, prefixedName, schemaDef),
     updateTTL: updateTTL(db, prefixedName, schemaDef),
     insert: insert(doc, prefixedName, schemaDef),
+    upsert: insert(doc, prefixedName, schemaDef, true),
     update: update(doc, prefixedName, schemaDef),
     delete: remove(doc, prefixedName, schemaDef),
     findOne: findOne(doc, prefixedName, schemaDef),
