@@ -1,6 +1,6 @@
 {
   "name": "@bhoos/dynamodb",
-  "version": "0.1.12",
+  "version": "0.1.14",
   "description": "Node DyanmoDB Library",
   "main": "cjs/index.js",
   "files": [
