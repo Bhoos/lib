@@ -170,7 +170,7 @@ describe('createCollection', () => {
     await expect(User.delete('U1')).rejects.toThrow();
   });
 
-  it.only('checks for all function with double keys', async () => {
+  it('checks for all function with double keys', async () => {
     await Movies.createTable();
 
     // Insert record
