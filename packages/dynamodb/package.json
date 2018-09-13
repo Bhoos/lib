@@ -7,7 +7,7 @@
     "cjs"
   ],
   "scripts": {
-    "test": "AWS_REGION='ap-south-1' DYNAMODB_ENDPOINT=http://localhost:8000 jest",
+    "test": "AWS_REGION='ap-south-1' DYNAMODB_ENDPOINT=http://localhost:8123 jest",
     "lint": "eslint src",
     "build": "babel src -d cjs",
     "prepare": "npm run test && npm run build"
@@ -19,6 +19,7 @@
     "shortid": "^2.2.8"
   },
   "devDependencies": {
+    "aws-db": "^1.0.3",
     "babel-cli": "^6.26.0",
     "babel-jest": "^23.0.1",
     "eslint": "^4.19.1",
