@@ -6,6 +6,5 @@
   "author": "Ranjan Shrestha",
   "license": "MIT",
   "dependencies": {
-    "@bhoos/normalized": "^0.0.8"
   }
 }
