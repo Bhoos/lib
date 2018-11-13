@@ -2,14 +2,16 @@
   "name": "@bhoos/dynamodb",
   "version": "0.1.14",
   "description": "Node DyanmoDB Library",
-  "main": "cjs/index.js",
+  "main": "dist/index.js",
+  "module": "src/index.js",
   "files": [
-    "cjs"
+    "dist",
+    "src"
   ],
   "scripts": {
     "test": "AWS_REGION='ap-south-1' DYNAMODB_ENDPOINT=http://localhost:8123 jest",
     "lint": "eslint src",
-    "build": "babel src -d cjs",
+    "build": "babel src -d dist",
     "prepare": "npm run test && npm run build"
   },
   "author": "Ranjan Shrestha",
