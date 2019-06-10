@@ -1,9 +1,9 @@
 /* eslint-disable no-param-reassign */
-function convertObjToExpression(params, obj) {
+function convertObjToExpression(params, obj, keyNames) {
   // Init params values
   params.UpdateExpression = '';
   params.ExpressionAttributeValues = {};
-
+  params.ExpressionAttributeNames = Object.assign({}, keyNames);
   let sep = 'SET';
 
   Object.keys(obj).forEach((name, idx) => {
@@ -26,14 +26,15 @@ function convertObjToExpression(params, obj) {
 /* eslint-enable */ // Renable eslint check
 
 export default function update(db, name, { keys, pKey, sKey }) {
+  const keyNames = keys.reduce((res, k) => {
+    res[`#${k.name}`] = k.name;
+    return res;
+  }, {});
+
   const params = {
     TableName: name,
     Key: {},
     ConditionExpression: keys.map(k => `attribute_exists(#${k.name})`).join(' AND '),
-    ExpressionAttributeNames: keys.reduce((res, k) => {
-      res[`#${k.name}`] = k.name;
-      return res;
-    }, {}),
   };
 
   return (record, pid, sid) => {
@@ -49,7 +50,7 @@ export default function update(db, name, { keys, pKey, sKey }) {
     }
 
     // Convert to update expression
-    convertObjToExpression(params, record);
+    convertObjToExpression(params, record, keyNames);
 
     return db.update(params).promise().then(() => true);
   };
