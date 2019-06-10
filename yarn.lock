@@ -325,9 +325,9 @@ atob@^2.0.0:
   resolved "https://registry.npmjs.org/atob/-/atob-2.1.0.tgz#ab2b150e51d7b122b9efc8d7340c06b6c41076bc"
 
 aws-db@^1.0.3:
-  version "1.0.4"
-  resolved "https://registry.yarnpkg.com/aws-db/-/aws-db-1.0.4.tgz#fa546e07589feeb9b85ab083a58a033b1d0343d8"
-  integrity sha512-28rGRkDs6jbQyNnBZczHoiTHjtGVP3oZifBva0AcM9qJGiPx2wiNK6UsicajW7sUEmhSpG62CEOhb4r0ckhXjw==
+  version "1.0.5"
+  resolved "https://registry.yarnpkg.com/aws-db/-/aws-db-1.0.5.tgz#deb72f716448f536c3eaca8b0fc82319903049f5"
+  integrity sha512-UcOeN8TxvgPEeLltA8oENbmz4h5xhr+v0iXMCTawjgUAyf6NHSithpOcipFriM6iGdMuCjz4Zy5vK3obIxkE9A==
   dependencies:
     sha.js "^2.4.11"
     targz "^1.0.1"
